@@ -6,16 +6,13 @@ class SlackNotification
   end
 
   def deliver
-    subject = "[#{@project.name}] #{@deploy.summary}"
-    #url = url_helpers.project_deploy_url(@project, @deploy)
-
     Slack.chat_postMessage(
       token: ENV['SLACK_TOKEN'],
       channel: @stage.slack_channels.first.channel_id,
       text: content,
       parse: "full")
 
-  rescue Slack::Error => e
+  rescue Slack::Error
   end
 
   private
