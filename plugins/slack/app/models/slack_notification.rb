@@ -1,5 +1,3 @@
-require 'slack-api'
-
 class SlackNotification
   def initialize(stage, deploy)
     @stage, @deploy = stage, deploy
@@ -8,24 +6,23 @@ class SlackNotification
   end
 
   def deliver
-    #subject = "[#{@project.name}] #{@deploy.summary}"
+    subject = "[#{@project.name}] #{@deploy.summary}"
     #url = url_helpers.project_deploy_url(@project, @deploy)
 
     Slack.chat_postMessage(
       token: ENV['SLACK_TOKEN'],
-      channel: @stage.slack_channel,
+      channel: @stage.slack_channels.first.channel_id,
       text: content,
       parse: "full")
 
   rescue Slack::Error => e
-    # Some problem communicating to slack server
-    puts e
   end
 
   private
 
   def content
-    @content ||= SlackNotificationRenderer.render(@deploy)
+    subject = "[#{@project.name}] #{@deploy.summary}"
+    @content ||= SlackNotificationRenderer.render(@deploy, subject)
   end
 
   def url_helpers
