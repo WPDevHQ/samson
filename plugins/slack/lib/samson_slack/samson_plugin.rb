@@ -16,19 +16,29 @@ Samson::Hooks.callback :stage_defined do
       slack_channels.any?
     end
 
+    def channel_name
+      slack_channels.first.try(:name)
+    end
+
     def no_channel_name?(slack_attrs)
       slack_attrs['name'].blank?
     end
 
     def update_channel_id
-      self.slack_channels.first.channel_id = channel_for(slack_channels.first.name)['id']
+      if channel_for(channel_name)
+        self.slack_channels.first.channel_id = channel_for(channel_name)['id']
+      end
     end
 
     def channel_exists?
-      errors.add(:slack_channels_name, "was not found") unless channel_for(slack_channels.first.name)
+      if channel_name
+        errors.add(:slack_channels_name, "was not found") unless channel_for(channel_name)
+      end
     end
 
     def channel_for(name)
+      return nil unless name
+
       response = Slack.channels_list(exlcude_archived: 1)
       response['channels'].select { |c| c['name'] == name }.first
     end
