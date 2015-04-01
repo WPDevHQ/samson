@@ -1,10 +1,10 @@
 require_relative '../../test_helper'
 
 describe Changeset::PullRequest do
-  let(:data) { stub("data", user: user, merged_by: merged_by, body: body) }
+  let(:data) { OpenStruct.new(user: user, merged_by: merged_by, body: body) }
   let(:pr) { Changeset::PullRequest.new("xxx", data) }
-  let(:user) { stub(login: "foo") }
-  let(:merged_by) { stub(login: "bar") }
+  let(:user) { OpenStruct.new(login: "foo") }
+  let(:merged_by) { OpenStruct.new(login: "bar") }
   let(:body) { "" }
 
   describe ".find" do
