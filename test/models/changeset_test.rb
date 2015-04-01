@@ -35,11 +35,11 @@ describe Changeset do
   end
 
   describe "#pull_requests" do
-    let(:comparison) { stub("comparison") }
+    let(:comparison) { OpenStruct.new }
 
     it "finds pull requests mentioned in merge commits" do
-      c1 = stub("commit1", commit: stub(message: "Merge pull request #42"))
-      c2 = stub("commit2", commit: stub(message: "Fix typo"))
+      c1 = OpenStruct.new(commit: OpenStruct.new(message: "Merge pull request #42"))
+      c2 = OpenStruct.new(commit: OpenStruct.new(message: "Fix typo"))
       comparison.stubs(:commits).returns([c1, c2])
       GITHUB.stubs(:compare).with("foo/bar", "a", "b").returns(comparison)
 
@@ -49,7 +49,7 @@ describe Changeset do
     end
 
     it "ignores invalid pull request numbers" do
-      commit = stub("commit", commit: stub(message: "Merge pull request #42"))
+      commit = OpenStruct.new(commit: OpenStruct.new(message: "Merge pull request #42"))
       comparison.stubs(:commits).returns([commit])
       GITHUB.stubs(:compare).with("foo/bar", "a", "b").returns(comparison)
 
